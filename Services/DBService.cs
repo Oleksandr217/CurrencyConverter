@@ -12,22 +12,19 @@ namespace currencyConverter.Services
 {
     public class DBService
     {
-        
-        public List<DictionaryEntry> GetAllDictionaryEntries()
+        public ObservableCollection<DictionaryItem> GetAllDictionaryEntries()
         {
             try
             {
-                using (var context = new DataContext())
-                {
-                    return context.Dictionary.ToList();
-                }
+                using var context = new DataContext();
+                var list = context.Dictionary.ToList();
+                return new ObservableCollection<DictionaryItem>(list);
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Помилка доступу до БД: {ex.Message}");
-                return new List<DictionaryEntry>();
+                return new ObservableCollection<DictionaryItem>();
             }
-
         }
     }
 }

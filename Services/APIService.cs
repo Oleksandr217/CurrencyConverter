@@ -4,7 +4,8 @@ using System.IO.Packaging;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading.Tasks;   
+using System.Windows;
 using currencyConverter.Model;
 using Newtonsoft.Json.Linq;
 
@@ -19,23 +20,26 @@ namespace currencyConverter.Services
         private readonly HttpClient _httpClient = new HttpClient();
         public async Task<Currency> GetCurrencyAsync(string name)
         {
-            string url = $"https://api.exchangerate.host/latest?base={name}&symbols=USD";
+            string encodedName = Uri.EscapeDataString(name.ToUpper());
+            string url = $"https://open.er-api.com/v6/latest/{encodedName}";
+
             var response = await _httpClient.GetAsync(url);
+            string json = await response.Content.ReadAsStringAsync();
+
             if (!response.IsSuccessStatusCode)
             {
-                throw new HttpRequestException($"Помилка: {(int)response.StatusCode} {response.ReasonPhrase}");
+                MessageBox.Show($"HTTP помилка: {(int)response.StatusCode} — {response.ReasonPhrase}");
+                return null;
             }
-
-            string json  = await response.Content.ReadAsStringAsync();
             var data = JObject.Parse(json);
+            
+            double? rate = data["rates"]?["USD"]?.Value<double>();
 
-            var result = data["results"]?.FirstOrDefault();
-            if (result == null)
+            if (rate == null)
             {
-                throw new Exception("Валюта не знайдена");
+                MessageBox.Show("Курс не знайдено. Перевір код валюти.");
+                return null;
             }
-
-            double rate = data["rates"]?["USD"]?.Value<double>() ?? throw new Exception("Не вдалося отримати курс.");
 
             return new Currency
             {
@@ -43,5 +47,6 @@ namespace currencyConverter.Services
                 RateToUSD = rate
             };
         }
+
     }
 }
