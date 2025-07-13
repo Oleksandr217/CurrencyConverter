@@ -8,25 +8,38 @@ using System.Threading.Tasks;
 
 namespace currencyConverter.Model
 {
-    public class Currency : INotifyPropertyChanged
+    public class DictionaryItem: INotifyPropertyChanged
     {
-        private string name;
-        private double? rateToUSD;
-        public string Name
+        
+        private int id;
+        private string code;
+        private string description;
+        
+        public int Id
         {
-            get => name;
+            get => id;
             set
             {
-                name = value;
+                id = value;
+                OnPropertyChanged();
+            }
+            
+        }
+        public string Code
+        {
+            get => code;
+            set
+            {
+                code = value;
                 OnPropertyChanged();
             }
         }
-        public double? RateToUSD
+        public string Description
         {
-            get => rateToUSD;
+            get => description;
             set
             {
-                rateToUSD = value;
+                description = value;
                 OnPropertyChanged();
             }
         }
