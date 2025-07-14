@@ -23,3 +23,9 @@ USD → US Dollar
 UAH → Ukrainian Hryvnia
 JPY → Japanese Yen
 This allows users to recognize currencies by familiar names rather than ISO codes.
+
+## Screenshots
+
+Main currency conversion window:
+
+![CurrencyConverter Screenshot](Screenshot/example.png)
